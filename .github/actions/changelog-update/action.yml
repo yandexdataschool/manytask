@@ -1,0 +1,33 @@
+name: "Changelog update"
+description: "Update changelog with release: Replace `Unpublished` header with a new tag"
+author: "Konstantin Chernyshev <k4black@ya.ru>"
+inputs:
+  tag:
+    description: 'New version tag to update version to'
+    required: true
+  date:
+    description: 'Release date in yyyy-mm-dd format'
+    required: false
+    default: ''
+  filename:
+    description: 'Token, to read the GitHub API. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: false
+    default: 'CHANGELOG.md'
+#outputs:
+#  prev-tag:
+#    description: 'Previous version we update from'
+#    value: ${{ steps.random-number-generator.outputs.random-id }}
+runs:
+  using: 'composite'
+  steps:
+    - run: | 
+        [ -f ${{ inputs.filename }} ] || cp ${{ github.action_path }}/template.md ${{ inputs.filename }}
+      shell: bash
+    - run: |
+        tag=${{ inputs.tag }} 
+        date=$(date '+%Y-%m-%d')
+        header="$tag ($date)"
+      shell: bash
+    - run: |
+        echo "header: < $header >"
+      shell: bash
